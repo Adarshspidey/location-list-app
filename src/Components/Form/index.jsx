@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import './style.css'
 
-const Form = ({ setFormData,positions }) => {
+const Form = ({ setFormData, formData, positions, mode, mark }) => {
   const [data, setData] = useState({ nickName: "", address: "" });
+
+  useEffect(() => {
+    if (mode === "view" || mode === "edit") {
+      setData(mark);
+    }
+  }, [mark, mode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,43 +21,65 @@ const Form = ({ setFormData,positions }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const currentDate = new Date();
-    const day = String(currentDate.getDate()).padStart(2, "0"); 
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); 
-    const year = currentDate.getFullYear(); 
-    const hours = String(currentDate.getHours()).padStart(2, "0"); 
+    const day = String(currentDate.getDate()).padStart(2, "0");
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const year = currentDate.getFullYear();
+    const hours = String(currentDate.getHours()).padStart(2, "0");
     const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    const time = hours + ":" + minutes; 
+    const time = hours + ":" + minutes;
     const uniqueId = Date.now().toString();
-
+  
     const newData = {
       ...data,
-      id: uniqueId,
-      date: `${day}-${month}-${year}`, 
+      date: `${day}-${month}-${year}`,
       time: time,
-      positions:positions
+      positions: positions,
     };
-    console.log(newData, "form data");
-    setFormData(prevFormData => [...prevFormData, newData]);
+  
+    if (mode === 'edit') {
+      const updatedFormData = formData.map(item => {
+        if (item.id === mark.id) {
+          return {
+            ...newData,
+            id: mark.id 
+          };
+        }
+        return item;
+      });
+      setFormData(updatedFormData);
+    } else {
+
+      newData.id = uniqueId;
+      setFormData(prevFormData => [...prevFormData, newData]);
+    }
   };
 
   return (
-    <div>
-      <form action="" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nick Name"
-          name="nickName"
-          value={data.nickName}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          name="address"
-          value={data.address}
-          onChange={handleChange}
-        />
-        <button type="submit"> Save</button>
+    <div >
+      <form action="" onSubmit={handleSubmit} className="form-container">
+        {mode === "view" ? (
+          <div>{data.nickName}</div>
+        ) : (
+          <input
+            type="text"
+            placeholder="Nick Name"
+            name="nickName"
+            value={data.nickName}
+            onChange={handleChange}
+          />
+        )}
+        {mode === "view" ? (
+          <div>{data.address}</div>
+        ) : (
+          <input
+            type="text"
+            placeholder="Address"
+            name="address"
+            value={data.address}
+            onChange={handleChange}
+          />
+        )}
+        {mode !== "view" && <button type="submit" className="button-save"> Save</button>}
       </form>
     </div>
   );

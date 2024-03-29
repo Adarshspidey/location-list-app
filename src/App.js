@@ -12,6 +12,8 @@ import Popup from "./Components/Popup";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState([]);
+  const [mode, setMode] = useState("");
+  const[editMarkerData,setEditMarkerData]=useState()
   const columns = useMemo(
     () => [
       {
@@ -72,7 +74,13 @@ function App() {
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Tooltip title="Edit">
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              setMode("edit");
+              setEditMarkerData(row.original);
+              setIsOpen(true);
+            }}
+          >
             <EditIcon />
           </IconButton>
         </Tooltip>
@@ -89,19 +97,34 @@ function App() {
     <>
       <div className="top-button-wrapper">
         <button
+        className="button-add-new"
           onClick={() => {
             setIsOpen(true);
+            setMode("add");
           }}
         >
           Add New
         </button>
       </div>
       <MaterialReactTable table={table} />
+      <div className="button-center-container">
+        <button
+        className="button-view"
+          onClick={() => {
+            setMode("view");
+            setIsOpen(true);
+          }}
+        >
+          View All
+        </button>
+      </div>
       {isOpen && (
         <Popup
           setIsOpen={setIsOpen}
           setFormData={setFormData}
           formData={formData}
+          editMarkerData={editMarkerData}
+          mode={mode}
         />
       )}
     </>

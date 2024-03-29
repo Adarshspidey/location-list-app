@@ -1,5 +1,36 @@
-.top-button-wrapper{
+.top-button-wrapper,
+.button-center-container {
   display: flex;
   justify-content: flex-end;
   padding: 20px;
+}
+
+.button-center-container {
+  justify-content: center;
+}
+
+.button-add-new,
+.button-view, .button-close,.button-save {
+  border: none;
+  background-color: rgb(0, 94, 255);
+  color: white;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  font-weight: 800;
+}
+
+.button-view {
+  background-color: rgb(6, 255, 76);
+}
+
+.button-close{
+  background-color: rgb(251, 29, 0);
+}
+
+.button-save{
+  background-color: #FFA500;
+  width: 75px;
+  height: 20px;
+  font-weight: 500;
 }

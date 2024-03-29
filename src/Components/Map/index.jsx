@@ -1,5 +1,5 @@
 import "leaflet/dist/leaflet.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -11,13 +11,21 @@ import "../../index.css";
 import { Icon } from "leaflet";
 import Form from "../Form";
 
-const center = {
-  lat: 51.505, // Latitude (e.g., London)
-  lng: -0.09, // Longitude
+let center = {
+  lat: 8.757509273522448, // Latitude (e.g., London)
+  lng: 76.74224853515626, // Longitude
 };
 
-function Map({setFormData }) {
+function Map({ setFormData, mode, formData, editMarkerData }) {
   const [positions, setPositions] = useState(null);
+  const[isIniatialCall,setIsinitialCall]= useState(false)
+
+  useEffect(() => {
+    if (mode === "edit" && editMarkerData.positions) {
+      setPositions(editMarkerData.positions);
+      setIsinitialCall(true)
+    }
+  }, [editMarkerData, mode]);
 
   const customIcon = new Icon({
     iconUrl: require("../../Asset/marker.png"),
@@ -27,15 +35,24 @@ function Map({setFormData }) {
   function MapClick() {
     const map = useMapEvent({
       click(e) {
-        // alert(e.latlng);
         setPositions(e.latlng);
         map.flyTo(e.latlng);
       },
     });
+    if (mode === "edit" && isIniatialCall) {
+      map.flyTo(editMarkerData.positions);
+      setIsinitialCall(false);
+    }
     return positions === null ? null : (
       <Marker position={positions} icon={customIcon}>
         <Popup>
-          <Form setFormData={setFormData} positions={positions}/>
+          <Form
+            setFormData={setFormData}
+            positions={positions}
+            mark={editMarkerData}
+            mode={mode}
+            formData={formData}
+          />
         </Popup>
       </Marker>
     );
@@ -48,7 +65,30 @@ function Map({setFormData }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MapClick />
+        {(mode === "add" || mode === "edit") && <MapClick />}
+        {mode === "view" && (
+          <>
+            {formData.map((mark, i) => (
+              <Marker key={i} position={mark.positions} icon={customIcon}>
+                <Popup>
+                  <Form setFormData={setFormData} mark={mark} mode={mode} />
+                </Popup>
+              </Marker>
+            ))}
+          </>
+        )}
+        {mode === "" && (
+          <Marker position={editMarkerData.positions} icon={customIcon}>
+            <Popup>
+              <Form
+                setFormData={setFormData}
+                mark={editMarkerData}
+                mode={mode}
+                formData={formData}
+              />
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
     </div>
   );
