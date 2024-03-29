@@ -1,5 +1,15 @@
 .form-container {
   display: grid;
-  gap: 5px;
+  gap: 15px;
   place-items: center;
+}
+
+.error-message-container {
+  position: relative;
+}
+
+.error-message {
+  position: absolute;
+  top: 0;
+  color: red;
 }

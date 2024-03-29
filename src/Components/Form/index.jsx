@@ -3,10 +3,12 @@ import './style.css'
 
 const Form = ({ setFormData, formData, positions, mode, mark }) => {
   const [data, setData] = useState({ nickName: "", address: "" });
+  const [nickNameError, setNickNameError] = useState("");
 
   useEffect(() => {
     if (mode === "view" || mode === "edit") {
       setData(mark);
+      setNickNameError(""); // Clear any previous error when switching modes
     }
   }, [mark, mode]);
 
@@ -16,10 +18,16 @@ const Form = ({ setFormData, formData, positions, mode, mark }) => {
       ...prevData,
       [name]: value,
     }));
+    setNickNameError(""); 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!data.nickName) {
+      setNickNameError("Nickname cannot be empty");
+      return; // Prevent form submission if validation fails
+    }
+
     const currentDate = new Date();
     const day = String(currentDate.getDate()).padStart(2, "0");
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
@@ -28,14 +36,14 @@ const Form = ({ setFormData, formData, positions, mode, mark }) => {
     const minutes = String(currentDate.getMinutes()).padStart(2, "0");
     const time = hours + ":" + minutes;
     const uniqueId = Date.now().toString();
-  
+
     const newData = {
       ...data,
       date: `${day}-${month}-${year}`,
       time: time,
       positions: positions,
     };
-  
+
     if (mode === 'edit') {
       const updatedFormData = formData.map(item => {
         if (item.id === mark.id) {
@@ -48,7 +56,6 @@ const Form = ({ setFormData, formData, positions, mode, mark }) => {
       });
       setFormData(updatedFormData);
     } else {
-
       newData.id = uniqueId;
       setFormData(prevFormData => [...prevFormData, newData]);
     }
@@ -60,13 +67,16 @@ const Form = ({ setFormData, formData, positions, mode, mark }) => {
         {mode === "view" ? (
           <div>{data.nickName}</div>
         ) : (
-          <input
-            type="text"
-            placeholder="Nick Name"
-            name="nickName"
-            value={data.nickName}
-            onChange={handleChange}
-          />
+          <div className="error-message-container">
+            <input
+              type="text"
+              placeholder="Nick Name"
+              name="nickName"
+              value={data.nickName}
+              onChange={handleChange}
+            />
+            {nickNameError && <p className="error-message">{nickNameError}</p>}
+          </div>
         )}
         {mode === "view" ? (
           <div>{data.address}</div>
