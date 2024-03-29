@@ -77,18 +77,6 @@ function Map({ setFormData, mode, formData, editMarkerData }) {
             ))}
           </>
         )}
-        {mode === "" && (
-          <Marker position={editMarkerData.positions} icon={customIcon}>
-            <Popup>
-              <Form
-                setFormData={setFormData}
-                mark={editMarkerData}
-                mode={mode}
-                formData={formData}
-              />
-            </Popup>
-          </Marker>
-        )}
       </MapContainer>
     </div>
   );
