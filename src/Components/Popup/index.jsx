@@ -23,7 +23,6 @@ const Popup = ({ setIsOpen, setFormData, formData, mode, editMarkerData }) => {
           </button>
         </div>
       </div>
-      <div className="top-button-wrapper"></div>
     </div>
   );
 };

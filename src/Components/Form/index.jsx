@@ -8,7 +8,7 @@ const Form = ({ setFormData, formData, positions, mode, mark }) => {
   useEffect(() => {
     if (mode === "view" || mode === "edit") {
       setData(mark);
-      setNickNameError(""); // Clear any previous error when switching modes
+      setNickNameError("");
     }
   }, [mark, mode]);
 
@@ -25,7 +25,7 @@ const Form = ({ setFormData, formData, positions, mode, mark }) => {
     e.preventDefault();
     if (!data.nickName) {
       setNickNameError("Nickname cannot be empty");
-      return; // Prevent form submission if validation fails
+      return; 
     }
 
     const currentDate = new Date();
